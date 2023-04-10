@@ -1,0 +1,109 @@
+ubuntu OS install 手順
+
+作成日：2023/03/28
+作成者：進藤嵩紘 (takahiro shindo)
+
+内容：ubuntu install の手順について解説(不明点がある場合は、各々が所属するチームゼミのゼミ長に聞くこと). PC 詳しくない人向け.
+
+
+1：PCの電源が切れていることを確認する.
+
+2：PCのストレージを確認する.
+	PC内,外にささっている HDD,SSD(sata接続) を目視で確認し、sata cable, power cable を外す.
+	この際、できる限り、HDD,SSDはケースから外さず、ケーブルのみを外す.
+
+3：PCIe接続のSSDを確認する.
+	PCIe接続のSSDは目視だと見落とすことが多いので、BIOSで確認する.
+	この種のSSDはケーブル接続ではなく、一般的に直接マザーボードにささっている.
+	
+	3-1：マウス,キーボード,ディスプレイをつけて、PCを起動. 起動時にF2キー連打でBIOSに入る.
+		BIOSに入る方法はF2キーでない場合があるかもしれないので、ディスプレイの表示を要確認.
+	3-2：ストレージの確認.
+		BOOT 画面において、ストレージを確認.
+		BOOT menue はBIOS, advanced mode に存在することが多い(asusの場合).
+		BIOS -> advanced mode -> BOOT -> BOOT option
+		BOOT option において、何かしらのストレージ(例えば、WD,toshiba,seagate),もしくは何かしらのos(例えば、windows,ubuntu)がある場合、要相談.
+		BOOT option において、何もない場合、続行.
+	3-3：PCの電源を切る.
+		電源ボタン長押しかも.
+
+4：ubuntuをinstallしたいストレージの準備.
+	使用して良いストレージを貰う. (勝手に選ぶと大事なデータが消えるので、気をつけること.)
+	ubuntu を入れたい HDD,SSD のみをPCに入れ、sataケーブルとpowerケーブルを接続する.
+	この際、他のストレージを接続しないこと.
+
+5：ubuntu install 用の USB を借りる.
+	先輩に声かけて借りる.
+
+6：install 用の USB をPCに挿す.
+
+7：ubuntu 起動
+	7-1：電源をつけ、BIOSに入る(F2キー).
+	7-2：USB の ubuntu で boot をかける.
+		BIOS -> advanced mode -> BOOT -> BOOT option
+		「BOOT option 1」 を [USB DISK 〜]にする.
+		save and exit.
+	7-3：しばらく待てば、ubuntu が立ち上がる.
+
+8：install ubuntu
+	8-1：try ubuntu OR install ubuntu -> install ubuntu
+	8-2：言語選択は好きなものを選択
+	8-3：normal installation
+	8-4：optionは無し
+	8-5：installation type について.
+		a) データ削除が認められている人 -> erase disk and install ubuntu
+		b) データ削除は認められていない人(ほとんどいないはず) -> somthing else -> partitionを個人で割り振る(partition setting については、当テキストfileの最後の方 appendix 1 で記述)
+		c) 共同研究等で配布されたpowerのあるPCを使用する人 -> something else が望ましいと思う(machine powerがあるので、auto installしてしまうと、性能を無駄にするかも？？よく調べていないのでわかりません)
+	8-6：place -> tokyo
+	8-7：Who are you?
+		a) name : watanabelab
+		b) password : WatanabeLab66401 
+	8-8：install 開始
+	8-9：終了したら restart
+	8-10：USBを抜き、enterボタンを押す.
+	8-11：ubuntuが立ち上がるはず. 立ち上がらなければ(windowsが起動するなど)BIOSでboot選択.
+
+9：proxy setting
+	9-1：プロキシ設定
+		settings -> network -> network proxy
+		manual に変更
+		HTTP Proxy : www-proxy.waseda.jp
+		HTTPS Proxt : www-proxy.waseda.jp
+		ポート番号はともに 8080
+	9-2：apt setting
+		terminal を開く
+		コマンド[cd]
+		コマンド[cd ../../]
+		コマンド[cd etc/apt]
+		コマンド[sudo gedit apt.conf]
+		エディターが開くので、以下を入力.
+			Acquire::http::Proxy "http://www-proxy.waseda.jp:8080";
+			Acquire::https::Proxy "http://www-proxy.waseda.jp:8080";
+		saveして閉じる。注意：「;」を忘れないこと。
+	9-3：update and upgrade
+		warningがたくさん出ているが無視.
+		コマンド[cd]
+		コマンド[sudo apt update] ：いろいろ取得されるはず. されない場合は要相談.
+		コマンド[sudo apt upgrade]
+	9-4：再起動
+		コマンド[sudo reboot]
+
+
+10：ubuntu install 終わり. 基本的には、ubuntuのバージョンを更新することは避けましょう. 環境が壊れることがあります.
+		
+
+
+		
+
+
+
+appendix 1 (partition)
+	ubuntuをinstallしたいストレージを選択肢、partitionを作成する.
+	a) 使用するストレージを選択
+	b) freespaceを選択
+	c) [+] mark -> EFI system partition -> 512MB
+	以下 machine power に応じて決定する.
+	d) [+] mark -> /boot -> 1GB or 2GB (余裕があれば2GB)
+	e) [+] mark -> swap -> CPU memory に応じて決定. (例, RAM 8GB: swap 4GB, RAM 16GB: swap 4GB, RAM 64 GB: swap 8GB, RAM 256GB: swap 16GB) あくまで例なので、個々人の好み.
+	f) [+] mark -> /(root), /usr, /var -> 個々人の好み
+	g) [+] mark -> /home -> other  homeディレクトリに残りの容量を配分
