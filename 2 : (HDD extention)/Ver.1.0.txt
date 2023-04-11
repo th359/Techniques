@@ -1,0 +1,70 @@
+ubuntu HDD増設手順
+
+作成日 2023/04/11
+
+1 : HDD接続(物理)
+	PCにHDDを入れ、sataケーブルとpowerケーブルをさす
+	
+2 : HDDの接続確認
+	2-1 : PCに電源をいれ、ubuntuを立ち上げる
+	2-2 : ストレージ確認
+		コマンド[sudo fdisk -l]
+	2-3 : 目当てのストレージを探す
+		「Disk model」と「容量」から判断する
+	2-4 : 場所の記録
+		disk /dev/○○○: 〜GiB
+		「/dev/○○○」を記録
+
+3 : fdiskでHDDの情報を書く
+	3-1 : fdiskを開く
+		先程記録したストレージの場所を使用
+		コマンド[sudo fdisk /dev/○○○]
+	3-2 : fdiskの使用方法確認
+		Command聞かれるので、[m]と打つと、使用方法を教えてくれる
+	3-3 : 設定
+		コマンド[n]; 新規パーティション作成
+		コマンド[p]; 基本パーティション
+		コマンド[1]; パーティション番号(一般的には１)
+		First sector ; 空なら2048(既定値でよい[enter])
+		☆ Last sector ; 任意の値。パーティジョンに割り当てられる容量が決まる (十分な容量があると、デフォルト2TiBの気がする)
+	3-4 : 確認保存
+		コマンド[p]; 内容確認
+		コマンド[w]; 保存fdisk終了
+		コマンド[sudo fdisk -l]; これでも中身の確認ができる
+
+4 : file systemの作成
+	4-1 : ストレージの情報記録
+		先ほど作成したパーティションの情報を確認
+		コマンド[sudo fdisk -l]
+		パーティション情報記録　「/dev/□□□」、(例「/dev/sdb1」)
+	4-2 :file system
+		システムはext4がおすすめ。長く生きるのと、容量も大きく設定可能
+		コマンド[sudo mkfs -t ext4 /dev/□□□]
+
+---以下、新しいhomeにパーティションをマウントする方法
+
+5 : マウント
+	5-1 : home1作成
+		コマンド[sudo mkdir /home1]
+	5-2 : mount
+		コマンド[sudo mount -t ext4 /dev/□□□ /home1]
+	5-3 : 確認
+		コマンド[df -h]
+		/deb/□□□　が　home1　にあれば良い
+
+6 : 自動マウント
+	6-1 : UUID確認
+		コマンド[sudo blkid /dev/□□□]
+		UUID記録
+	6-2 : fstab
+		コマンド[sudo gedit /etc/fstab]
+		swapの記述の下に以下を追記
+		[/dev/disk/by-uuid/[UUID] /home1 ext4 defaults 0 0]
+
+7 : 権限書き換え
+	7-1 : nautilus
+		コマンド[sudo nautilus]
+	7-2 : 権限書き換え
+		設定から、すべての人に、すべての権限を与える
+	7-3 : nautilus終了
+	
