@@ -56,7 +56,7 @@ ubuntu OS install 手順
 	8-6：place -> tokyo
 	8-7：Who are you?
 		a) name : watanabelab
-		b) password : WatanabeLab66401 
+		b) password : 「いつものやつ」
 	8-8：install 開始
 	8-9：終了したら restart
 	8-10：USBを抜き、enterボタンを押す.
