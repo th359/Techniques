@@ -1,0 +1,11 @@
+1. terminalを開いて以下を入力、driver候補がでてくるはず
+ubuntu-drivers devices
+
+2. 入れたいdriverを選択、無難にrecommendedがよい（例えば460、460は適宜変える）
+sudo apt install nvidia-driver-460
+
+3. 再起動
+sudo reboot
+
+4. 以下のコマンドを入力してdriver情報がみれたらOK
+nvidia-smi

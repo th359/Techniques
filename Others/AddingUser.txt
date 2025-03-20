@@ -1,0 +1,25 @@
+・ubuntuユーザを追加してsudo権限をつける
+1. terminalを開いて以下を入力（user_nameは追加したいユーザ名）
+sudo adduser {user_name}
+
+2. パスワードを入力し、Enterを連打
+Adding user `user_name' ... Adding new group` user_name' (1002) ...
+Adding new user `user_name' (1002) with group` user_name' ...
+Creating home directory `/home/user_name' ... Copying files from` /etc/skel' ...
+Enter new UNIX password:  # パスワード入力
+Retype new UNIX password: # パスワード入力（確認）
+passwd: password updated successfully
+Changing the user information for user_name
+Enter the new value, or press ENTER for the default
+Full Name []:    # Enter連打
+Room Number []:
+Work Phone []:
+Home Phone []:
+Other []:
+Is the information correct? [Y/n] Y  # Yes
+
+3.  sudo権限をつけるために以下を入力
+sudo gpasswd -a {user_name} sudo
+
+これが表示されたらOK
+Adding user {user_name} to group sudo
